@@ -7,6 +7,7 @@ import struct
 from socket import AF_INET
 from socket import inet_ntoa
 from pyroute2 import IPRoute
+from pyroute2 import NetNS
 from pyroute2 import IPDB
 
 # get access to the netlink socket
@@ -23,8 +24,9 @@ def stderr(*args, **kwargs):
 
 def get_ipaddr_data(response_type):
     if response_type == 'real':
-        ip = IPRoute()
-        interface = ip.get_addr(label='eth00', family=AF_INET)
+        # ip = IPRoute()
+        ip = NetNS('dp')
+        interface = ip.get_addr(label='eth0', family=AF_INET)
         ip_address = interface[0].get_attr('IFA_ADDRESS')
         cidr = interface[0]['prefixlen']
         gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
