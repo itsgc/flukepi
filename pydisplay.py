@@ -185,9 +185,9 @@ def page1(disp_surface, counter):
         myfont = pygame.font.Font(None, 18)
         consoleSurface = pygame.Surface((disp_surface.get_width()-200, 150 ))
         consoleSurface.fill((1,100,100))
-        big_sentence = 'someverylongthingwith multiple lines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
+        big_sentence = 't4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
         blit_text(consoleSurface, big_sentence, (10,10), myfont)
-        disp_surface.blit(consoleSurface, (100,200))
+        disp_surface.blit(consoleSurface, (100,220))
         # fetch and draw lldp information
         get_lldp()
         # fetch and draw dhcp information

@@ -72,7 +72,7 @@
     failed_when: (ifplugd_not_running.rc != 255) and (ifplugd_not_running.rc != 0) 
 
   - name: Start ifplugd inside namespace
-    shell: nohup ip netns exec dp ifplugd -I -i eth0 &
+    shell: nohup ip netns exec dp ifplugd -I -i eth0 --delay-down=1 &
     when: ifplugd_not_running['changed'] == True 
 
   - name: debug stuff
