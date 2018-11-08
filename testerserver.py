@@ -9,6 +9,7 @@ from flask import request
 from flask import url_for
 from lldp_gen import get_lldp_info
 from dhcp_info import get_dhcp_info
+from link import get_ethtool_info
 from os import environ
 from yaml import load
 
@@ -44,5 +45,6 @@ def dhcp():
 
 @app.route("/link")
 def link():
-    payload =  { 'state': 'UP', 'speed': '1000Mb/s', 'Autoneg': 'on', 'duplex': 'full' }
+    #payload =  { 'state': 'UP', 'speed': '1000Mb/s', 'Autoneg': 'on', 'duplex': 'full' }
+    payload = get_ethtool_info()
     return jsonify(payload)
