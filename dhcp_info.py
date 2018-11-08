@@ -25,11 +25,14 @@ def stderr(*args, **kwargs):
 def get_ipaddr_data(response_type):
     if response_type == 'real':
         # ip = IPRoute()
-        ip = NetNS('dp')
-        interface = ip.get_addr(label='eth0', family=AF_INET)
-        ip_address = interface[0].get_attr('IFA_ADDRESS')
-        cidr = interface[0]['prefixlen']
-        gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
+        with NetNS('dp') as ip:
+            try:
+                interface = ip.get_addr(label='eth0', family=AF_INET)
+                ip_address = interface[0].get_attr('IFA_ADDRESS')
+                cidr = interface[0]['prefixlen']
+                gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
+            except Exception as e:
+                raise e
     elif response_type == 'mock':
         ip_address = '192.168.0.5'
         cidr = 24
@@ -42,7 +45,6 @@ def get_ipaddr_data(response_type):
     j = { 'ip_address': ip_address,
           'subnet_mask': cidr_to_netmask(cidr),
           'gateway': gateway }
-    ip.close()
     return j
 
 def munge_output(config):
