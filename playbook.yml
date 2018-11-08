@@ -11,6 +11,7 @@
       name: "{{ packages }}"
     vars:
       packages:
+        - ethtool
         - curl
         - python3-pygame
         - python3-requests
