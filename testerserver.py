@@ -7,7 +7,7 @@ from flask import jsonify
 from flask import redirect
 from flask import request
 from flask import url_for
-from lldp_gen import get_lldp_info()
+from lldp_gen import get_lldp_info
 from os import environ
 from yaml import load
 
