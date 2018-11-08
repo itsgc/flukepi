@@ -24,23 +24,22 @@ def stderr(*args, **kwargs):
 
 def get_ipaddr_data(response_type):
     if response_type == 'real':
-        # ip = IPRoute()
-        with NetNS('dp', flags=os.O_CREAT) as ip:
-            try:
-                interface = ip.get_addr(label='eth0', family=AF_INET)
-                ip_address = interface[0].get_attr('IFA_ADDRESS')
-                cidr = interface[0]['prefixlen']
-                gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
-            except IndexError as idxerror:
-                print("Not finding an interface yet")
-                ip_address = 'N/A'
-                cidr = 0
-                gateway = 'N/A'
-            except Exception as e:
-                raise e
-            finally:
-                print("closing socket")
-                ip.close()
+        try:
+            ip = NetNS('dp', flags=os.O_CREAT)
+            interface = ip.get_addr(label='eth0', family=AF_INET)
+            ip_address = interface[0].get_attr('IFA_ADDRESS')
+            cidr = interface[0]['prefixlen']
+            gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
+        except IndexError as idxerror:
+            print("Not finding an interface yet")
+            ip_address = 'N/A'
+            cidr = 0
+            gateway = 'N/A'
+        except Exception as e:
+            raise e
+        finally:
+            print("closing socket")
+            ip.close()
     elif response_type == 'mock':
         ip_address = '192.168.0.5'
         cidr = 24
