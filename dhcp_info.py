@@ -24,7 +24,7 @@ def stderr(*args, **kwargs):
 def get_ipaddr_data(response_type):
     if response_type == 'real':
         ip = IPRoute()
-        interface = ip.get_addr(label='wlan0', family=AF_INET)
+        interface = ip.get_addr(label='eth00', family=AF_INET)
         ip_address = interface[0].get_attr('IFA_ADDRESS')
         cidr = interface[0]['prefixlen']
         gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
@@ -41,32 +41,6 @@ def get_ipaddr_data(response_type):
           'subnet_mask': cidr_to_netmask(cidr),
           'gateway': gateway }
     return j
-
-
-def get_dhcpcd_dump(response_type):
-    if response_type == 'real':
-        DHCP_CMD = 'dhcpcd -4 -U eth0'
-    elif response_type == 'mock':
-        DHCP_CMD = 'cat dhcpcd_output.txt'
-    else:
-        DHCP_CMD = 'cat test/unplugged.json'
-    dhcp_cmd = shlex.split(DHCP_CMD)
-    proc = subprocess.Popen(dhcp_cmd, stdout=subprocess.PIPE)
-
-    try:
-        (stdout, stderr) = proc.communicate(timeout=20)
-    except (TimeoutExpired) as e:
-        stderr(e.msg)
-        return False
-    j = dict()
-    for i in stdout.decode('utf-8').splitlines():
-        a = i.split('=') 
-        expr = r"\'"
-        key = re.sub(expr, '', a[0])
-        value = re.sub(expr, '', a[1])
-        j[key] = value 
-    return j
-
 
 def munge_output(config):
     '''
