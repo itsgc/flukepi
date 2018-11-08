@@ -4,15 +4,15 @@ import shlex
 import json
 
 
-# set type to mock, real, disc
+# set type to mock, real, dc
 TYPE = 'mock'
 
 if TYPE == 'real':
-    LLDP_CMD = 'cat lldpctl-f.json'
-elif TYPE == 'real':
     LLDP_CMD = 'lldpctl -f json'
+elif TYPE == 'mock':
+    LLDP_CMD = 'cat test/lldpctl-f.json'
 else:
-    LLDP_CMD = 'cat unplugged.json'
+    LLDP_CMD = 'cat test/unplugged.json'
 
 
 def stderr(*args, **kwargs):
