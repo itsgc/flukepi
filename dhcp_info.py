@@ -1,9 +1,9 @@
-
 import subprocess
 import shlex
 import json
 import re
 import struct
+import os
 from socket import AF_INET
 from socket import inet_ntoa
 from pyroute2 import IPRoute
@@ -25,7 +25,7 @@ def stderr(*args, **kwargs):
 def get_ipaddr_data(response_type):
     if response_type == 'real':
         # ip = IPRoute()
-        with NetNS('dp') as ip:
+        with NetNS('dp', flags=os.O_CREAT) as ip:
             try:
                 interface = ip.get_addr(label='eth0', family=AF_INET)
                 ip_address = interface[0].get_attr('IFA_ADDRESS')
@@ -39,6 +39,7 @@ def get_ipaddr_data(response_type):
             except Exception as e:
                 raise e
             finally:
+                print("closing socket")
                 ip.close()
     elif response_type == 'mock':
         ip_address = '192.168.0.5'

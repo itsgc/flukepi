@@ -2,6 +2,7 @@
 - name: Transform rpi 
   hosts: localhost 
   connection: local
+  gather_facts: no
   become: true
 
   tasks:
