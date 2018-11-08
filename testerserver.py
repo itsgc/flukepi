@@ -7,6 +7,7 @@ from flask import jsonify
 from flask import redirect
 from flask import request
 from flask import url_for
+from lldp_gen import get_lldp_info()
 from os import environ
 from yaml import load
 
@@ -15,6 +16,7 @@ try:
 except ImportError:
     import _thread as thread
 import time
+
 
 def create_app():
     app = Flask(__name__)
@@ -29,7 +31,8 @@ def index():
 
 @app.route("/lldp")
 def lldp():
-    payload =  { 'switch_name': 'hamasw4-1', 'switch_port': 'ge-0/2/45', 'vlans': ['SALES_WIRED', 'VOIP'] }
+    payload = get_lldp_info(type='mock')
+    # payload =  { 'switch_name': 'hamasw4-1', 'switch_port': 'ge-0/2/45', 'vlans': ['SALES_WIRED', 'VOIP'] }
     return jsonify(payload)
 
 @app.route("/dhcp")

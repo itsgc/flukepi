@@ -80,7 +80,10 @@ def get_dhcp():
     # This would normally use requests to get DHCP information returned
     # but for now we'll just fake it
 
-    dhcp_response = { 'ip_address': '10.20.20.30', 'subnet_mask': '255.255.252.0', 'gateway': '10.20.20.1' }    
+    try:
+        dhcp_response = requests.get("http://localhost:8080/dhcp").json()
+    except:
+        dhcp_response = {}
 
     myfont = pygame.font.Font(None, 30)
     textsurface = myfont.render('DHCP', False, CYAN)
@@ -107,8 +110,11 @@ while True:
     for event in pygame.event.get():
         if (event.type is MOUSEBUTTONUP): 
             pos = pygame.mouse.get_pos()
-            if pos in pygame.Rect.collidepoint(390, 230, 80, 80):
-                print(pos)
+            x,y = pos
+            # hack - we know the button is bottom right
+            if x >= 290 and y <= 110:
+                print("Success! " + str(pos))
+
 
     # We need to blank the screen before drawing on it again
 
