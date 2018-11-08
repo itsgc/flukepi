@@ -36,7 +36,6 @@ ORANGE = (241, 92, 0)
 
 def get_lldp():
     # This uses requests to get LLDP information returned
-
     try:
         lldp_response = requests.get("http://localhost:8080/lldp").json()
     except:
@@ -63,7 +62,7 @@ def get_lldp():
 
     try:
         # draw response on the screen
-        offset = 150 
+        offset = 150
         for vlan in lldp_response['vlans']:
             textsurface = myfont.render(vlan, False, ORANGE)
             DISPLAYSURF.blit(textsurface,(10, offset))
@@ -74,7 +73,6 @@ def get_lldp():
         DISPLAYSURF.blit(textsurface,(10, 150))
 
 def get_dhcp():
-
     try:
         dhcp_response = requests.get("http://localhost:8080/dhcp").json()
     except:
@@ -83,7 +81,6 @@ def get_dhcp():
     myfont = pygame.font.Font(None, 30)
     textsurface = myfont.render('DHCP', False, CYAN)
     DISPLAYSURF.blit(textsurface,(240, 60))
-
     try:
         # draw response on the screen
         myfont = pygame.font.Font(None, 30)
@@ -101,57 +98,102 @@ def get_dhcp():
 
 counter = 0
 
-while True:
+# https://stackoverflow.com/questions/42014195/rendering-text-with-multiple-lines-in-pygame
+def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
+#--
 
+def page1(disp_surface, counter):
+        # an unused button, but something to play with
+        # pygame.draw.rect(disp_surface, GREEN,(390, 230, 80, 80))
+        # draw some lines to create sections on the screen
+        # pygame.draw.line(disp_surface, ORANGE, [5, 140], [disp_surface.get_width()-5,140], 1)
+        # draw the yelp logo
+        yelpImg = pygame.image.load('yelp-logo.png')
+        disp_surface.blit(yelpImg, (0,0))
+        # draw text on the screen
+        myfont = pygame.font.Font(None, 40)
+        textsurface = myfont.render('Network Tester',False, RED)
+        disp_surface.blit(textsurface,(270,10))
+        # draw more text on the screen
+        myfont = pygame.font.Font(None, 18)
+        consoleSurface = pygame.Surface((disp_surface.get_width()-200, 150 ))
+        consoleSurface.fill((1,100,100))
+        big_sentence = 'someverylongthingwith multiple lines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
+        blit_text(consoleSurface, big_sentence, (10,10), myfont)
+        disp_surface.blit(consoleSurface, (100,200))
+        # fetch and draw lldp information
+        get_lldp()
+        # fetch and draw dhcp information
+        get_dhcp()
+        # draw the slack logo
+        slackImg = pygame.image.load('slack-logo.png')
+        disp_surface.blit(slackImg, (380,220))
+
+
+def page2(disp_surface, counter):
+        # an unused button, but something to play with
+        # pygame.draw.rect(disp_surface, GREEN,(390, 230, 80, 80))
+        # draw some lines to create sections on the screen
+        # pygame.draw.line(disp_surface, ORANGE, [5, 140], [disp_surface.get_width()-5,140], 1)
+        # draw the yelp logo
+        yelpImg = pygame.image.load('yelp-logo.png')
+        disp_surface.blit(yelpImg, (0,0))
+        # draw text on the screen
+        myfont = pygame.font.Font(None, 40)
+        textsurface = myfont.render('Network Tester',False, RED)
+        disp_surface.blit(textsurface,(270,10))
+        # draw more text on the screen
+        myfont = pygame.font.Font(None, 18)
+        consoleSurface = pygame.Surface((disp_surface.get_width(), disp_surface.get_height()))
+        consoleSurface.fill((1,100,100))
+        big_sentence = 'someverylongthingwith multiple lines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
+        blit_text(consoleSurface, big_sentence, (10,10), myfont)
+        disp_surface.blit(consoleSurface, (0,0))
+        # fetch and draw lldp information
+
+pass
+
+page_one = True
+while True:
     # Scan touchscreen events
     for event in pygame.event.get():
-        if (event.type is MOUSEBUTTONUP): 
+        if (event.type is MOUSEBUTTONUP):
             pos = pygame.mouse.get_pos()
             x,y = pos
             # hack - we know the button is bottom right
             if x >= 290 and y <= 110:
                 print("Success! " + str(pos))
+                page_one = not page_one
 
 
     # We need to blank the screen before drawing on it again
-
     black_square_that_is_the_size_of_the_screen = pygame.Surface(DISPLAYSURF.get_size())
     black_square_that_is_the_size_of_the_screen.fill((0, 0, 0))
     DISPLAYSURF.blit(black_square_that_is_the_size_of_the_screen, (0, 0))
 
-    # an unused button, but something to play with
-    # pygame.draw.rect(DISPLAYSURF, GREEN,(390, 230, 80, 80))
-    # draw the slack logo
-    slackImg = pygame.image.load('slack-logo.png')
-    DISPLAYSURF.blit(slackImg, (380,220))
-
-
-    # draw some lines to create sections on the screen
-    # pygame.draw.line(DISPLAYSURF, ORANGE, [5, 140], [DISPLAYSURF.get_width()-5,140], 1)
-
-    # draw the yelp logo
-    yelpImg = pygame.image.load('yelp-logo.png')
-    DISPLAYSURF.blit(yelpImg, (0,0))
-
-    # draw text on the screen
-    myfont = pygame.font.Font(None, 40)
-    textsurface = myfont.render('Network Tester',False, RED)
-    DISPLAYSURF.blit(textsurface,(270,10))
-
-    # draw more text on the screen
-    myfont = pygame.font.Font(None, 20)
-    textsurface = myfont.render('loop counter: ' + str(counter) ,False, RED)
-    DISPLAYSURF.blit(textsurface,(10,300))
-    counter += 1
-
-    # fetch and draw lldp information
-    get_lldp()
-
-    # fetch and draw dhcp information
-    get_dhcp()
-
+    if page_one:
+        page1(DISPLAYSURF, counter)
+    else:
+        page2(DISPLAYSURF, counter)
+    myfont = pygame.font.Font(None, 18)
     # this actually updates the display
     pygame.display.update()
 
+    counter += 1
     clock = pygame.time.Clock()
-    clock.tick(5) 
+    clock.tick(5)
