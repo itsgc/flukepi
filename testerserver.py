@@ -38,6 +38,6 @@ def dhcp():
     return jsonify(payload)
 
 @app.route("/link")
-def dhcp():
+def link():
     payload =  { 'state': 'UP', 'speed': '1000Mb/s', 'Autoneg': 'on', 'duplex': 'full' }
     return jsonify(payload)
