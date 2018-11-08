@@ -107,13 +107,17 @@ while True:
     for event in pygame.event.get():
         if (event.type is MOUSEBUTTONUP): 
             pos = pygame.mouse.get_pos()
-            print(pos)
+            if pos in pygame.Rect.collidepoint(390, 230, 80, 80):
+                print(pos)
 
     # We need to blank the screen before drawing on it again
 
     black_square_that_is_the_size_of_the_screen = pygame.Surface(DISPLAYSURF.get_size())
     black_square_that_is_the_size_of_the_screen.fill((0, 0, 0))
     DISPLAYSURF.blit(black_square_that_is_the_size_of_the_screen, (0, 0))
+
+    # an unused button, but something to play with
+    pygame.draw.rect(DISPLAYSURF, GREEN,(390, 230, 80, 80))
 
     # draw some lines to create sections on the screen
     # pygame.draw.line(DISPLAYSURF, ORANGE, [5, 140], [DISPLAYSURF.get_width()-5,140], 1)
