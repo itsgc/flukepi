@@ -36,7 +36,9 @@ def get_ipaddr_data(response_type):
                 ip_address = 'N/A'
                 cidr = 0
                 gateway = 'N/A'
+		ip.close()
             except Exception as e:
+		ip.close()
                 raise e
     elif response_type == 'mock':
         ip_address = '192.168.0.5'
