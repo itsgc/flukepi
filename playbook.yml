@@ -6,28 +6,44 @@
 
   tasks:
 
-  - name: Install curl 
-    apt:
-      name: curl 
-      state: present
+  - name: Install dependencies
+    apt: 
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - curl
+        - python3-pygame
+        - python3-requests
+        - ifplugd
+        - lldpd
+        - python3-flask
+        - python3-yaml
+        - uwsgi-plugin-python3
+        - uwsgi
+        - python3-scapy
 
-  - name: Install python-pygame 
-    apt:
-      name: python-pygame 
-      state: present
+  - name: create pi .ssh dir
+    file:
+      path: "/home/pi/.ssh"
+      state: directory
 
-  - name: Install ifplugd
-    apt:
-      name: ifplugd
-      state: present
+  - name: copy pub ssh key
+    template: 
+      src: templates/id_rsa.pub
+      dest: /home/pi/.ssh/authorized_keys
+      owner: pi
+      group: pi 
+      mode: '0600'
 
   - name: Create namespace
     ip_netns:
       name: dp
       state: present
+    register: ns_setup
 
   - name: place eth0 into dp netns
-    shell: ip link set dev eth0 netns dp 
+    shell: ip link set dev eth0 netns dp
+    when: ns_setup['changed'] == True 
 
   - name: copy ifplugd templates
     template:
@@ -38,5 +54,10 @@
       mode: '0755'
       backup: yes
 
-  - name: Start ifplugd inside namespace 
+  - name: Start ifplugd inside namespace
     shell: nohup ip netns exec dp ifplugd -i eth0 &
+    when: ns_setup['changed'] == True
+
+  - name: debug stuff
+    debug:
+      var: ns_setup
