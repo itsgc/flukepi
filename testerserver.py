@@ -31,7 +31,7 @@ def index():
 
 @app.route("/lldp")
 def lldp():
-    payload = get_lldp_info(type='mock')
+    payload = get_lldp_info()
     # payload =  { 'switch_name': 'hamasw4-1', 'switch_port': 'ge-0/2/45', 'vlans': ['SALES_WIRED', 'VOIP'] }
     return jsonify(payload)
 
