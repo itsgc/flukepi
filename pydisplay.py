@@ -10,6 +10,10 @@ import pygame, sys, os, time, datetime, urllib, csv, requests
 from pygame.locals import *
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 
+import calendar
+import time
+from functools import lru_cache
+
 ## Globals
 
 values = "NULL"
@@ -34,12 +38,19 @@ BLUE  = (  0,   0, 255)
 CYAN  = (  0, 255, 255)
 ORANGE = (241, 92, 0)
 
-def get_lldp():
+@lru_cache(maxsize=1)
+def get_lldp_http(timestamp):
     # This uses requests to get LLDP information returned
+    lldp_response = {}
     try:
         lldp_response = requests.get("http://localhost:8080/lldp").json()
     except:
-        lldp_response = {}
+        pass
+    return lldp_response
+
+def get_lldp():
+    global timestamp
+    lldp_response = get_lldp_http(timestamp)
 
     myfont = pygame.font.Font(None, 30)
 
@@ -72,11 +83,19 @@ def get_lldp():
         textsurface = myfont.render('No VLANS Captured', False, ORANGE)
         DISPLAYSURF.blit(textsurface,(10, 150))
 
-def get_dhcp():
+@lru_cache(maxsize=1)
+def get_dhcp_http(timestamp):
+    dhcp_response = {}
     try:
         dhcp_response = requests.get("http://localhost:8080/dhcp").json()
     except:
-        dhcp_response = {}
+        pass
+    return dhcp_response
+
+
+def get_dhcp():
+    global timestamp
+    dhcp_response = get_dhcp_http(timestamp)
 
     myfont = pygame.font.Font(None, 30)
     textsurface = myfont.render('DHCP', False, CYAN)
@@ -181,6 +200,7 @@ while True:
                 page_one = not page_one
 
 
+    timestamp = calendar.timegm(time.gmtime())
     # We need to blank the screen before drawing on it again
     black_square_that_is_the_size_of_the_screen = pygame.Surface(DISPLAYSURF.get_size())
     black_square_that_is_the_size_of_the_screen.fill((0, 0, 0))
