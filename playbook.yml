@@ -17,7 +17,7 @@
         - curl
         - python3-pygame
         - python3-requests
-        - python3-pyroute2
+	- python3-pip
         - ifplugd
         - lldpd
         - python3-flask
@@ -25,6 +25,12 @@
         - uwsgi-plugin-python3
         - uwsgi
         - python3-scapy
+
+  - name: install pyroute2
+    pip:
+	name: https://github.com/svinota/pyroute2.git
+	version: 0.5.3
+    	executable: pip3
 
   - name: create pi .ssh dir
     file:

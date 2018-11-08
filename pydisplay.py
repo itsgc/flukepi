@@ -115,6 +115,39 @@ def get_dhcp():
         textsurface = myfont.render('No DHCP Captured', False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 80))
 
+
+
+@lru_cache(maxsize=1)
+def get_link_http(timestamp):
+    link_response = {}
+    try:
+        link_response = requests.get("http://localhost:8080/link").json()
+    except:
+        pass
+    return link_response
+
+
+def get_link():
+    global timestamp
+    link_response = get_link_http(timestamp)
+
+    myfont = pygame.font.Font(None, 30)
+    textsurface = myfont.render('LINK', False, CYAN)
+    DISPLAYSURF.blit(textsurface,(240, 150))
+    try:
+        # draw response on the screen
+        myfont = pygame.font.Font(None, 30)
+        textsurface = myfont.render(link_response['speed'], False, ORANGE)
+        DISPLAYSURF.blit(textsurface,(240, 170))
+        textsurface = myfont.render(link_response['duplex'], False, ORANGE)
+        DISPLAYSURF.blit(textsurface,(240, 190))
+    except:
+        # draw response on the screen
+        myfont = pygame.font.Font(None, 30)
+        textsurface = myfont.render('No link info', False, ORANGE)
+        DISPLAYSURF.blit(textsurface,(240, 170))
+
+
 counter = 0
 
 # https://stackoverflow.com/questions/42014195/rendering-text-with-multiple-lines-in-pygame
@@ -159,6 +192,8 @@ def page1(disp_surface, counter):
         get_lldp()
         # fetch and draw dhcp information
         get_dhcp()
+        # fetch and draw link information
+        get_link()
         # draw the slack logo
         slackImg = pygame.image.load('slack-logo.png')
         disp_surface.blit(slackImg, (380,220))
