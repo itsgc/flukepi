@@ -42,6 +42,7 @@ def get_ipaddr_data(response_type):
     j = { 'ip_address': ip_address,
           'subnet_mask': cidr_to_netmask(cidr),
           'gateway': gateway }
+    ip.close()
     return j
 
 def munge_output(config):
