@@ -13,7 +13,7 @@ sudo apt-get install ansible
 
 
 Start backend
-uwsgi --ini uwsgi.ini
+sudo uwsgi --ini uwsgi.ini
 
 Start Frontend
-python3 pydisplay.py
+sudo python3 pydisplay.py

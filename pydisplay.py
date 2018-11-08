@@ -120,7 +120,11 @@ while True:
     DISPLAYSURF.blit(black_square_that_is_the_size_of_the_screen, (0, 0))
 
     # an unused button, but something to play with
-    pygame.draw.rect(DISPLAYSURF, GREEN,(390, 230, 80, 80))
+    # pygame.draw.rect(DISPLAYSURF, GREEN,(390, 230, 80, 80))
+    # draw the slack logo
+    slackImg = pygame.image.load('slack-logo.png')
+    DISPLAYSURF.blit(slackImg, (380,220))
+
 
     # draw some lines to create sections on the screen
     # pygame.draw.line(DISPLAYSURF, ORANGE, [5, 140], [DISPLAYSURF.get_width()-5,140], 1)

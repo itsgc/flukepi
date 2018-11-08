@@ -31,14 +31,15 @@ def get_ipaddr_data(response_type):
                 ip_address = interface[0].get_attr('IFA_ADDRESS')
                 cidr = interface[0]['prefixlen']
                 gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
+                ip.close()
             except IndexError as idxerror:
                 print("Not finding an interface yet")
                 ip_address = 'N/A'
                 cidr = 0
                 gateway = 'N/A'
-		ip.close()
+                ip.close()
             except Exception as e:
-		ip.close()
+                ip.close()
                 raise e
     elif response_type == 'mock':
         ip_address = '192.168.0.5'
