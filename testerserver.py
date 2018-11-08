@@ -8,6 +8,7 @@ from flask import redirect
 from flask import request
 from flask import url_for
 from lldp_gen import get_lldp_info
+from dhcp_info import get_dhcp_info
 from os import environ
 from yaml import load
 
@@ -37,7 +38,8 @@ def lldp():
 
 @app.route("/dhcp")
 def dhcp():
-    payload =  { 'ip_address': '10.20.20.30', 'subnet_mask': '255.255.252.0', 'gateway': '10.20.20.1' }
+    # payload =  { 'ip_address': '10.20.20.30', 'subnet_mask': '255.255.252.0', 'gateway': '10.20.20.1' }
+    payload = get_dhcp_info()
     return jsonify(payload)
 
 @app.route("/link")
