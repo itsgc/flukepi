@@ -1,0 +1,42 @@
+---
+- name: Transform rpi 
+  hosts: localhost 
+  connection: local
+  become: true
+
+  tasks:
+
+  - name: Install curl 
+    apt:
+      name: curl 
+      state: present
+
+  - name: Install python-pygame 
+    apt:
+      name: python-pygame 
+      state: present
+
+  - name: Install ifplugd
+    apt:
+      name: ifplugd
+      state: present
+
+  - name: Create namespace
+    ip_netns:
+      name: dp
+      state: present
+
+  - name: place eth0 into dp netns
+    shell: ip link set dev eth0 netns dp 
+
+  - name: copy ifplugd templates
+    template:
+      src: templates/ifplugd/ifupdown
+      dest: /etc/ifplugd/action.d/ifupdown
+      owner: root
+      group: root
+      mode: '0755'
+      backup: yes
+
+  - name: Start ifplugd inside namespace 
+    shell: nohup ip netns exec dp ifplugd -i eth0 &

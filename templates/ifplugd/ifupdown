@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+case "$2" in
+up)
+	ip netns exec dp dhclient $1
+	;;
+down)
+	ip netns exec dp dhclient -r
+        ;;
+esac
