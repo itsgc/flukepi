@@ -16,7 +16,6 @@ values = "NULL"
 labels = "NULL"
 timetopoll = True
 
-
 ## Set up the screen
 
 pygame.init()
@@ -24,6 +23,7 @@ pygame.init()
 DISPLAYSURF = pygame.display.set_mode((480, 320))
 pygame.display.set_caption('Stats')
 pygame.mouse.set_visible(0)
+
 
 # set up the colors
 BLACK = (  0,   0,   0)
@@ -35,15 +35,12 @@ CYAN  = (  0, 255, 255)
 ORANGE = (241, 92, 0)
 
 def get_lldp():
-    # This would normally use requests to get LLDP information returned
-    # but for now we'll just fake it
+    # This uses requests to get LLDP information returned
 
     try:
         lldp_response = requests.get("http://localhost:8080/lldp").json()
     except:
         lldp_response = {}
-
-    #lldp_response = { 'switch_name': 'hamasw4-1', 'switch_port': 'ge-0/2/45', 'vlans': ['SALES', 'VOIP'] }    
 
     myfont = pygame.font.Font(None, 30)
 
@@ -77,8 +74,6 @@ def get_lldp():
         DISPLAYSURF.blit(textsurface,(10, 150))
 
 def get_dhcp():
-    # This would normally use requests to get DHCP information returned
-    # but for now we'll just fake it
 
     try:
         dhcp_response = requests.get("http://localhost:8080/dhcp").json()
@@ -103,6 +98,8 @@ def get_dhcp():
         myfont = pygame.font.Font(None, 30)
         textsurface = myfont.render('No DHCP Captured', False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 80))
+
+counter = 0
 
 while True:
 
@@ -137,6 +134,12 @@ while True:
     textsurface = myfont.render('Network Tester',False, RED)
     DISPLAYSURF.blit(textsurface,(270,10))
 
+    # draw more text on the screen
+    myfont = pygame.font.Font(None, 20)
+    textsurface = myfont.render('loop counter: ' + str(counter) ,False, RED)
+    DISPLAYSURF.blit(textsurface,(10,300))
+    counter += 1
+
     # fetch and draw lldp information
     get_lldp()
 
@@ -146,4 +149,5 @@ while True:
     # this actually updates the display
     pygame.display.update()
 
-    time.sleep(1)
+    clock = pygame.time.Clock()
+    clock.tick(5) 
