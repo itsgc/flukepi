@@ -6,7 +6,7 @@
 #
 # Picture of how it looks: http://imgur.com/Hm9syVQ
 
-import pygame, sys, os, time, datetime, urllib, csv
+import pygame, sys, os, time, datetime, urllib, csv, requests
 from pygame.locals import *
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 
@@ -38,24 +38,43 @@ def get_lldp():
     # This would normally use requests to get LLDP information returned
     # but for now we'll just fake it
 
-    lldp_response = { 'switch_name': 'hamasw4-1', 'switch_port': 'ge-0/2/45' }    
+    try:
+        lldp_response = requests.get("http://localhost:8080/lldp").json()
+    except:
+        lldp_response = {}
+
+    #lldp_response = { 'switch_name': 'hamasw4-1', 'switch_port': 'ge-0/2/45', 'vlans': ['SALES', 'VOIP'] }    
 
     myfont = pygame.font.Font(None, 30)
+
     textsurface = myfont.render('LLDP', False, CYAN)
     DISPLAYSURF.blit(textsurface,(10, 60))
 
     try:
         # draw response on the screen
-        myfont = pygame.font.Font(None, 30)
         textsurface = myfont.render('Switch: ' + lldp_response['switch_name'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(10, 80))
         textsurface = myfont.render('Port: ' + lldp_response['switch_port'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(10, 100))
     except:
         # draw response on the screen
-        myfont = pygame.font.Font(None, 30)
         textsurface = myfont.render('No LLDP Captured', False, ORANGE)
         DISPLAYSURF.blit(textsurface,(10, 80))
+
+    textsurface = myfont.render('VLANS', False, CYAN)
+    DISPLAYSURF.blit(textsurface,(10, 130))
+
+    try:
+        # draw response on the screen
+        offset = 150 
+        for vlan in lldp_response['vlans']:
+            textsurface = myfont.render(vlan, False, ORANGE)
+            DISPLAYSURF.blit(textsurface,(10, offset))
+            offset += 20
+    except:
+        # draw response on the screen
+        textsurface = myfont.render('No VLANS Captured', False, ORANGE)
+        DISPLAYSURF.blit(textsurface,(10, 150))
 
 def get_dhcp():
     # This would normally use requests to get DHCP information returned
@@ -84,6 +103,12 @@ def get_dhcp():
 
 while True:
 
+    # Scan touchscreen events
+    for event in pygame.event.get():
+        if (event.type is MOUSEBUTTONUP): 
+            pos = pygame.mouse.get_pos()
+            print(pos)
+
     # We need to blank the screen before drawing on it again
 
     black_square_that_is_the_size_of_the_screen = pygame.Surface(DISPLAYSURF.get_size())
@@ -108,14 +133,7 @@ while True:
     # fetch and draw dhcp information
     get_dhcp()
 
-    # rotate 180 degrees so HDMI plug is at the top of the case
-    # this isn't strictly needed but is nice for development ;-)
-
-    DISPLAYSURF.blit(pygame.transform.rotate(DISPLAYSURF, 180), (0, 0))
-
     # this actually updates the display
     pygame.display.update()
 
-    # sleep a wee bit since we don't need insanely fast reactions (yet)
     time.sleep(1)
-
