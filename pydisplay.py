@@ -174,26 +174,25 @@ def page1(disp_surface, counter):
         # pygame.draw.rect(disp_surface, GREEN,(390, 230, 80, 80))
         # draw some lines to create sections on the screen
         # pygame.draw.line(disp_surface, ORANGE, [5, 140], [disp_surface.get_width()-5,140], 1)
+
         # draw the yelp logo
         yelpImg = pygame.image.load('yelp-logo.png')
         disp_surface.blit(yelpImg, (0,0))
+
         # draw text on the screen
         myfont = pygame.font.Font(None, 40)
         textsurface = myfont.render('Network Tester',False, RED)
         disp_surface.blit(textsurface,(270,10))
-        # draw more text on the screen
-        myfont = pygame.font.Font(None, 18)
-        consoleSurface = pygame.Surface((disp_surface.get_width()-200, 150 ))
-        consoleSurface.fill((1,100,100))
-        big_sentence = 't4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
-        blit_text(consoleSurface, big_sentence, (10,10), myfont)
-        disp_surface.blit(consoleSurface, (100,220))
+
         # fetch and draw lldp information
         get_lldp()
+
         # fetch and draw dhcp information
         get_dhcp()
+
         # fetch and draw link information
         get_link()
+
         # draw the slack logo
         slackImg = pygame.image.load('slack-logo.png')
         disp_surface.blit(slackImg, (380,220))
@@ -207,10 +206,12 @@ def page2(disp_surface, counter):
         # draw the yelp logo
         yelpImg = pygame.image.load('yelp-logo.png')
         disp_surface.blit(yelpImg, (0,0))
+
         # draw text on the screen
         myfont = pygame.font.Font(None, 40)
         textsurface = myfont.render('Network Tester',False, RED)
         disp_surface.blit(textsurface,(270,10))
+
         # draw more text on the screen
         myfont = pygame.font.Font(None, 18)
         consoleSurface = pygame.Surface((disp_surface.get_width(), disp_surface.get_height()))
