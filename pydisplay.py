@@ -68,13 +68,14 @@ def run_process(cmd, queue):
 def worker(cmd_q):
     print("Worker entered")
     global speedtest_started
+    global speedtest_started_and_finished
     global console_data
     while True:
         if speedtest_started:
             line = cmd_q.get()
             if line == 'finito':
                 print("worker finish")
-                speedtest_started = False
+                speedtest_started_and_finished = True
                 continue
             # add to console .. worry later about pygame stuff
             console_data.append(line)
@@ -325,6 +326,7 @@ def page2(disp_surface, counter):
 pass
 
 speedtest_started = False
+speedtest_started_and_finished = False
 counter = 0
 page_one = True
 while True:
@@ -352,7 +354,7 @@ while True:
         page2(DISPLAYSURF, counter)
     myfont = pygame.font.Font(None, 18)
     # this actually updates the display
-    console_data.append(json.dumps(slack_data, indent=2))
+    # console_data.append(json.dumps(slack_data, indent=2))
     pygame.display.update()
 
     # send to slack and life is good :)
