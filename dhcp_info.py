@@ -24,35 +24,33 @@ def stderr(*args, **kwargs):
 
 def get_ipaddr_data(response_type):
     if response_type == 'real':
-        try:
-            ip = NetNS('dp', flags=os.O_CREAT)
-            physical = ip.link("get", index=ip.link_lookup(ifname="eth0")[0])
-            interface = ip.get_addr(label='eth0', family=AF_INET)
-            ip_address = interface[0].get_attr('IFA_ADDRESS')
-            mac_address = physical[0].get_attr('IFLA_ADDRESS')
-            cidr = interface[0]['prefixlen']
-            gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
-        except IndexError as idxerror:
-            print("Not finding an interface yet")
-            ip_address = 'N/A'
-            cidr = 0
-            gateway = 'N/A'
-            mac_address = 'N/A'
-        except Exception as e:
-            raise e
-        finally:
-            print("closing socket")
-            ip.close()
+      ip = NetNS('dp', flags=os.O_CREAT)
+      physical = ip.link("get", index=ip.link_lookup(ifname="eth0")[0])
+      mac_address = physical[0].get_attr('IFLA_ADDRESS')
+      try:
+          interface = ip.get_addr(label='eth0', family=AF_INET)
+          ip_address = interface[0].get_attr('IFA_ADDRESS')
+          cidr = interface[0]['prefixlen']
+          gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
+      except IndexError as idxerror:
+          print("Not finding an interface yet")
+          ip_address = 'N/A'
+          cidr = 0
+          gateway = 'N/A'
+          mac_address = 'N/A'
+      except Exception as e:
+          raise e
+      finally:
+          print("closing socket")
+          ip.close()
     elif response_type == 'mock':
         ip_address = '192.168.0.5'
         cidr = 24
         gateway = '192.168.0.1' 
-        mac_address = 'aa:bb:cc:11:22:33'
     else:
         ip_address = 'N/A'
         cidr = 0
         gateway = 'N/A'
-        mac_address = 'N/A'
  
     j = { 'mac_address': mac_address,
           'ip_address': ip_address,
