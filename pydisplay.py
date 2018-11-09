@@ -6,7 +6,7 @@
 #
 # Picture of how it looks: http://imgur.com/Hm9syVQ
 
-import pygame, sys, os, time, datetime, urllib, csv, requests
+import pygame, sys, os, time, datetime, urllib, csv, requests, collections
 from pygame.locals import *
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 
@@ -19,6 +19,8 @@ from functools import lru_cache
 values = "NULL"
 labels = "NULL"
 timetopoll = True
+console_data = collections.deque(maxlen=10)
+console_data.append("Empty right now")
 
 ## Set up the screen
 
@@ -181,29 +183,32 @@ def page1(disp_surface, counter):
         # pygame.draw.rect(disp_surface, GREEN,(390, 230, 80, 80))
         # draw some lines to create sections on the screen
         # pygame.draw.line(disp_surface, ORANGE, [5, 140], [disp_surface.get_width()-5,140], 1)
+
         # draw the yelp logo
         yelpImg = pygame.image.load('yelp-logo.png')
         disp_surface.blit(yelpImg, (0,0))
+
         # draw text on the screen
         myfont = pygame.font.Font(None, 40)
         textsurface = myfont.render('Network Tester',False, RED)
         disp_surface.blit(textsurface,(270,10))
-        # draw more text on the screen
-        myfont = pygame.font.Font(None, 18)
-        consoleSurface = pygame.Surface((disp_surface.get_width()-200, 150 ))
-        consoleSurface.fill((1,100,100))
-        big_sentence = 't4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
-        blit_text(consoleSurface, big_sentence, (10,10), myfont)
-        disp_surface.blit(consoleSurface, (100,220))
+
         # fetch and draw lldp information
         get_lldp()
+
         # fetch and draw dhcp information
         get_dhcp()
+
         # fetch and draw link information
         get_link()
+
         # draw the slack logo
         slackImg = pygame.image.load('slack-logo.png')
         disp_surface.blit(slackImg, (380,220))
+
+        # draw the fast.com logo
+        fastcomImg = pygame.image.load('fast.com.jpeg')
+        disp_surface.blit(fastcomImg, (0,220))
 
 
 def page2(disp_surface, counter):
@@ -214,16 +219,18 @@ def page2(disp_surface, counter):
         # draw the yelp logo
         yelpImg = pygame.image.load('yelp-logo.png')
         disp_surface.blit(yelpImg, (0,0))
+
         # draw text on the screen
         myfont = pygame.font.Font(None, 40)
         textsurface = myfont.render('Network Tester',False, RED)
         disp_surface.blit(textsurface,(270,10))
+
         # draw more text on the screen
         myfont = pygame.font.Font(None, 18)
         consoleSurface = pygame.Surface((disp_surface.get_width(), disp_surface.get_height()))
-        consoleSurface.fill((1,100,100))
-        big_sentence = 'someverylongthingwith multiple lines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whatevlines and t4ext and whateveeeeeelines and t4ext and whatever\nloop counter: ' + str(counter)
-        blit_text(consoleSurface, big_sentence, (10,10), myfont)
+        consoleSurface.fill((BLACK))
+        big_sentence = "\n".join(console_data)
+        blit_text(consoleSurface, big_sentence, (10,10), myfont, WHITE)
         disp_surface.blit(consoleSurface, (0,0))
         # fetch and draw lldp information
 
@@ -240,6 +247,8 @@ while True:
             if x >= 290 and y <= 110:
                 print("Success! " + str(pos))
                 page_one = not page_one
+
+    console_data.append("This is a test with \na carriage return in it" + str(counter))
 
 
     timestamp = calendar.timegm(time.gmtime())
