@@ -6,7 +6,7 @@
 #
 # Picture of how it looks: http://imgur.com/Hm9syVQ
 
-import pygame, sys, os, time, datetime, urllib, csv, requests, collections, subprocess
+import pygame, sys, os, time, datetime, urllib, csv, requests, collections, subprocess, json
 from pygame.locals import *
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 
@@ -15,6 +15,13 @@ import time
 from functools import lru_cache
 
 ## Globals
+
+f = open('/etc/network-tester-slack.json')
+data = f.read()
+slack_url = json.loads(data)['url']
+f.close()
+
+slack_data = dict()
 
 values = "NULL"
 labels = "NULL"
@@ -41,7 +48,6 @@ BLUE  = (  0,   0, 255)
 CYAN  = (  0, 255, 255)
 ORANGE = (241, 92, 0)
 
-slack_data = dict()
 
 @lru_cache(maxsize=1)
 def get_lldp_http(timestamp):
@@ -53,6 +59,17 @@ def get_lldp_http(timestamp):
         pass
     slack_data['lldp_data'] = lldp_response
     return lldp_response
+
+def send_slack_data(slack_data):
+    str_slack_data = json.dumps(slack_data, indent=2)
+    response = requests.post(
+        slack_url, data="{ 'text': 'NEW RESULTS INCOMING!' }",
+        headers={'Content-Type': 'application/json'}
+    )
+    response = requests.post(
+        slack_url, data="{ 'text': '%s' }" % str_slack_data,
+        headers={'Content-Type': 'application/json'}
+    )
 
 def get_lldp():
     global timestamp
@@ -249,9 +266,7 @@ def page2(disp_surface, counter):
         big_sentence = "\n".join(console_data)
         blit_text(consoleSurface, big_sentence, (10,10), myfont, WHITE)
         disp_surface.blit(consoleSurface, (0,0))
-
-        # the button to show page 1
-        pygame.draw.rect(disp_surface, ORANGE, (370, 230, 100, 80))
+# the button to show page 1 pygame.draw.rect(disp_surface, ORANGE, (370, 230, 100, 80))
         # draw text on the button
         myfont = pygame.font.Font(None, 24)
         textsurface = myfont.render('Next Page',False, WHITE)
@@ -264,15 +279,13 @@ page_one = True
 while True:
     # Scan touchscreen events
     for event in pygame.event.get():
-        if (event.type is MOUSEBUTTONUP):
+        if (event.type is MOUSEBUTTONDOWN):
             pos = pygame.mouse.get_pos()
             x,y = pos
             # hack - we know the button is bottom right
             if x >= 290 and y <= 110:
                 print("Success! " + str(pos))
                 page_one = not page_one
-
-
 
     timestamp = calendar.timegm(time.gmtime())
     # We need to blank the screen before drawing on it again
@@ -286,8 +299,12 @@ while True:
         page2(DISPLAYSURF, counter)
     myfont = pygame.font.Font(None, 18)
     # this actually updates the display
-    print(slack_data)
+    console_data.append(json.dumps(slack_data, indent=2))
     pygame.display.update()
+
+    # send to slack and life is good :)
+    if int(counter) % 60 == 0:
+        send_slack_data(slack_data)
 
     counter += 1
     clock = pygame.time.Clock()
