@@ -28,17 +28,21 @@ def get_lldpctl(response_type):
     # json.dumps(j, sort_keys=True, indent=2)
     return j
 
-def vlan_lookup(lookuptable='vlan_lookup.json', vlan_id=None):
-    with open(lookuptable) as json_data:
-        d = json.load(json_data)
-        vlan_id = re.sub(r'vlan-', '', vlan_id)
-        try:
-          value = d[vlan_id] + "(" + vlan_id + ")"
-          return value
-        except KeyError as e:
-          value = None
-        except Exception as e:
-          raise e
+def vlan_lookup(lookuptable='/etc/vlan_lookup.json', vlan_id=None):
+    try:
+      with open(lookuptable) as json_data:
+          d = json.load(json_data)
+      print(vlan_id)
+      value = d[vlan_id] + "(" + vlan_id + ")"
+      return value
+    except FileNotFoundError as e:
+      value = vlan_id
+      return value
+    except KeyError as e:
+      value = None
+      return value
+    except Exception as e:
+      raise e
 
 def munge_output(config, interface=u'eth0'):
     '''
@@ -68,7 +72,7 @@ def munge_output(config, interface=u'eth0'):
     vlans = config['lldp']['interface'][interface].get('vlan', False)
     if vlans:
         base_format['vlans'] += [
-            vlan_lookup(vlan_id=v['value']) for v in vlans if ( v['value'] != 'vlan-1' and v['value'] != 'voice' )]
+            vlan_lookup(vlan_id=v['vlan-id']) for v in vlans if ( v['value'] != 'vlan-1' and v['value'] != 'voice' )]
     return base_format
 
 
