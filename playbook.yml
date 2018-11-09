@@ -26,6 +26,11 @@
         - uwsgi
         - python3-scapy
 
+  - name: checkout fast git repo
+    git:
+      repo: 'https://github.com/filipposc5/fast.com'
+      dest: /home/pi/fast
+
   - name: install pyroute2
     pip:
       name: git+https://github.com/svinota/pyroute2.git
