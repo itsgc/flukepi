@@ -299,7 +299,6 @@ while True:
         page2(DISPLAYSURF, counter)
     myfont = pygame.font.Font(None, 18)
     # this actually updates the display
-    console_data.append(json.dumps(slack_data, indent=2))
     pygame.display.update()
 
     # send to slack and life is good :)
