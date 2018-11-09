@@ -54,6 +54,7 @@ ORANGE = (241, 92, 0)
 
 
 def run_process(cmd, queue):
+    print("subprocess entered")
     #proc = subprocess.Popen([""], stdout=subprocess.PIPE)
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as proc:
         for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
@@ -63,6 +64,7 @@ def run_process(cmd, queue):
 
 # Run this forever
 def worker(cmd_q):
+    print("Worker entered")
     global speedtest_started
     while True:
         if speedtest_started:
@@ -73,6 +75,7 @@ def worker(cmd_q):
             # add to console .. worry later about pygame stuff
             deque.append(line)
         time.sleep(0.2)
+        print("worker loop")
 
 
 
