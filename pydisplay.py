@@ -41,6 +41,8 @@ BLUE  = (  0,   0, 255)
 CYAN  = (  0, 255, 255)
 ORANGE = (241, 92, 0)
 
+slack_data = dict()
+
 @lru_cache(maxsize=1)
 def get_lldp_http(timestamp):
     # This uses requests to get LLDP information returned
@@ -49,6 +51,7 @@ def get_lldp_http(timestamp):
         lldp_response = requests.get("http://localhost:8080/lldp").json()
     except:
         pass
+    slack_data['lldp_data'] = lldp_response
     return lldp_response
 
 def get_lldp():
@@ -93,6 +96,7 @@ def get_dhcp_http(timestamp):
         dhcp_response = requests.get("http://localhost:8080/dhcp").json()
     except:
         pass
+    slack_data['dhcp_data'] = dhcp_response
     return dhcp_response
 
 
@@ -129,6 +133,7 @@ def get_link_http(timestamp):
         link_response = requests.get("http://localhost:8080/link").json()
     except:
         pass
+    slack_data['link_data'] = link_response
     return link_response
 
 
@@ -281,6 +286,7 @@ while True:
         page2(DISPLAYSURF, counter)
     myfont = pygame.font.Font(None, 18)
     # this actually updates the display
+    print(slack_data)
     pygame.display.update()
 
     counter += 1
