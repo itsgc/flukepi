@@ -21,7 +21,7 @@ labels = "NULL"
 timetopoll = True
 console_data = collections.deque(maxlen=10)
 ifconfig = subprocess.check_output(["ip", "netns", "exec", "dp", "/sbin/ifconfig", "eth0"])
-console_data.append(ifconfig.decode("utf-8"))
+console_data.extend(ifconfig.decode("utf-8").split('\n'))
 
 ## Set up the screen
 
