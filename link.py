@@ -31,12 +31,13 @@ def get_ethtool(response_type):
 def munge_output(config, interface=u'eth0'):
     '''
     return something like
-    { 'speed': '1000Mb/s', 'duplex': 'Full'}
+    { 'speed': '1000Mb/s', 'duplex': 'Full', 'link': 'yes'}
     but only once since we only have 1 interface
     '''
     base_format = {
                     'speed': 'N/A',
-                    'duplex': 'N/A'
+                    'duplex': 'N/A',
+                    'link': 'no'
                   }
     '''
     # Check if there are any interfaces
@@ -63,6 +64,7 @@ def munge_output(config, interface=u'eth0'):
         #print(line)
         if "Speed:" in line: base_format['speed'] = re.sub(r"[\t]*", "", line)
         if "Duplex:" in line: base_format['duplex'] = re.sub(r"[\t]*", "", line)
+        if "Link detected:" in line: base_format['link'] = re.sub(r"[\t]*", "", line)
 
     return base_format 
 
