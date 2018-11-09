@@ -105,3 +105,4 @@ venv.bak/
 nohup.out
 playbook.retry
 vlan_lookup.json
+fast_com
