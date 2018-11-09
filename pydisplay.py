@@ -58,31 +58,34 @@ def run_process(cmd, queue):
     #proc = subprocess.Popen([""], stdout=subprocess.PIPE)
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as proc:
         for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+            print(line)
             if 'Loop' in line:
                 queue.put(line.strip())
     queue.put('finito')
+
 
 # Run this forever
 def worker(cmd_q):
     print("Worker entered")
     global speedtest_started
+    global console_data
     while True:
         if speedtest_started:
             line = cmd_q.get()
             if line == 'finito':
+                print("worker finish")
                 speedtest_started = False
                 continue
             # add to console .. worry later about pygame stuff
-            deque.append(line)
+            console_data.append(line)
         time.sleep(0.2)
-        print("worker loop")
 
 
 
 def gui_speedtest(started):
     print("gui speedtest {}".format(started))
     if started:
-        return
+        return True
     cmd = ["./long-cmd"]
     cmd = ["python2", "-u", "fast_integration-py2.py" ]
     q = Queue()
@@ -94,7 +97,7 @@ def gui_speedtest(started):
     p.daemon = True
     p.start()
     print("gui speedtest {}".format(started))
-    return False
+    return True
 
 @lru_cache(maxsize=1)
 def get_lldp_http(timestamp):
