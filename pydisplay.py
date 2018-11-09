@@ -180,10 +180,16 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
 #--
 
 def page1(disp_surface, counter):
-        # an unused button, but something to play with
-        # pygame.draw.rect(disp_surface, GREEN,(390, 230, 80, 80))
         # draw some lines to create sections on the screen
         # pygame.draw.line(disp_surface, ORANGE, [5, 140], [disp_surface.get_width()-5,140], 1)
+
+        # the button to show page 2
+        pygame.draw.rect(disp_surface, ORANGE, (370, 230, 100, 80))
+        # draw text on the button
+        myfont = pygame.font.Font(None, 24)
+        textsurface = myfont.render('Next Page',False, WHITE)
+        disp_surface.blit(textsurface,(380, 260))
+
 
         # draw the yelp logo
         yelpImg = pygame.image.load('yelp-logo.png')
@@ -205,11 +211,12 @@ def page1(disp_surface, counter):
 
         # draw the slack logo
         slackImg = pygame.image.load('slack-logo.png')
-        disp_surface.blit(slackImg, (380,220))
+        disp_surface.blit(slackImg, (220,220))
 
         # draw the fast.com logo
         fastcomImg = pygame.image.load('fast.com.jpeg')
         disp_surface.blit(fastcomImg, (0,220))
+
 
 
 def page2(disp_surface, counter):
@@ -218,6 +225,8 @@ def page2(disp_surface, counter):
         # draw some lines to create sections on the screen
         # pygame.draw.line(disp_surface, ORANGE, [5, 140], [disp_surface.get_width()-5,140], 1)
         # draw the yelp logo
+
+
         yelpImg = pygame.image.load('yelp-logo.png')
         disp_surface.blit(yelpImg, (0,0))
 
@@ -233,7 +242,14 @@ def page2(disp_surface, counter):
         big_sentence = "\n".join(console_data)
         blit_text(consoleSurface, big_sentence, (10,10), myfont, WHITE)
         disp_surface.blit(consoleSurface, (0,0))
-        # fetch and draw lldp information
+
+        # the button to show page 1
+        pygame.draw.rect(disp_surface, ORANGE, (370, 230, 100, 80))
+        # draw text on the button
+        myfont = pygame.font.Font(None, 24)
+        textsurface = myfont.render('Next Page',False, WHITE)
+        disp_surface.blit(textsurface,(380, 260))
+
 
 pass
 
