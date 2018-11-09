@@ -213,11 +213,11 @@ def page1(disp_surface, counter):
 
         # draw the slack logo
         slackImg = pygame.image.load('slack-logo.png')
-        disp_surface.blit(slackImg, (220,220))
+        disp_surface.blit(slackImg, (120,220))
 
         # draw the fast.com logo
         fastcomImg = pygame.image.load('fast.com.jpeg')
-        disp_surface.blit(fastcomImg, (0,220))
+        disp_surface.blit(fastcomImg, (10,220))
 
 
 
