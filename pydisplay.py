@@ -6,7 +6,7 @@
 #
 # Picture of how it looks: http://imgur.com/Hm9syVQ
 
-import pygame, sys, os, time, datetime, urllib, csv, requests, collections
+import pygame, sys, os, time, datetime, urllib, csv, requests, collections, subprocess
 from pygame.locals import *
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 
@@ -20,7 +20,8 @@ values = "NULL"
 labels = "NULL"
 timetopoll = True
 console_data = collections.deque(maxlen=10)
-console_data.append("Empty right now")
+console_data.append(subprocess.call("ip netns exec dp /sbin/ifconfig eth0", shell=True))
+
 
 ## Set up the screen
 
@@ -241,7 +242,6 @@ while True:
                 print("Success! " + str(pos))
                 page_one = not page_one
 
-    console_data.append("This is a test with \na carriage return in it" + str(counter))
 
 
     timestamp = calendar.timegm(time.gmtime())
