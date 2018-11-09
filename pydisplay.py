@@ -14,6 +14,10 @@ import calendar
 import time
 from functools import lru_cache
 
+from threading import Thread
+from queue import Queue
+import io
+
 ## Globals
 
 f = open('/etc/network-tester-slack.json')
@@ -48,6 +52,44 @@ BLUE  = (  0,   0, 255)
 CYAN  = (  0, 255, 255)
 ORANGE = (241, 92, 0)
 
+
+def run_process(cmd, queue):
+    #proc = subprocess.Popen([""], stdout=subprocess.PIPE)
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE) as proc:
+        for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+            if 'Loop' in line:
+                queue.put(line.strip())
+    queue.put('finito')
+
+# Run this forever
+def worker(cmd_q):
+    global speedtest_started
+    while True:
+        if speedtest_started:
+            line = cmd_q.get()
+            if line == 'finito':
+                speedtest_started = False
+                continue
+            # add to console .. worry later about pygame stuff
+            deque.append(line)
+        time.sleep(0.2)
+
+
+
+def gui_speedtest(started):
+    if started:
+        return
+    cmd = ["./long-cmd"]
+    cmd = ["python2", "-u", "fast_integration-py2.py" ]
+    q = Queue()
+    t = Thread(target=worker, args=(q,))
+    t.daemon = True
+    t.start()
+    p = Thread(target=run_process, args=(cmd,q,))
+    #run_process(cmd, q)
+    p.daemon = True
+    p.start()
+    return False
 
 @lru_cache(maxsize=1)
 def get_lldp_http(timestamp):
@@ -170,7 +212,7 @@ def get_link():
             textsurface = myfont.render(link_response['duplex'], False, ORANGE)
             DISPLAYSURF.blit(textsurface,(240, 210))
         else:
-            # draw no link info on screen 
+            # draw no link info on screen
             myfont = pygame.font.Font(None, 30)
             textsurface = myfont.render('No link info', False, ORANGE)
             DISPLAYSURF.blit(textsurface,(240, 190))
@@ -182,7 +224,6 @@ def get_link():
         DISPLAYSURF.blit(textsurface,(240, 170))
 
 
-counter = 0
 
 # https://stackoverflow.com/questions/42014195/rendering-text-with-multiple-lines-in-pygame
 def blit_text(surface, text, pos, font, color=pygame.Color('black')):
@@ -275,6 +316,8 @@ def page2(disp_surface, counter):
 
 pass
 
+speedtest_started = False
+counter = 0
 page_one = True
 while True:
     # Scan touchscreen events
@@ -296,6 +339,8 @@ while True:
     if page_one:
         page1(DISPLAYSURF, counter)
     else:
+        print("speedtest_started: {}".format(speedtest_started))
+        speedtest_started = gui_speedtest(speedtest_started)
         page2(DISPLAYSURF, counter)
     myfont = pygame.font.Font(None, 18)
     # this actually updates the display
