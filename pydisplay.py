@@ -106,12 +106,14 @@ def get_dhcp():
     try:
         # draw response on the screen
         myfont = pygame.font.Font(None, 30)
-        textsurface = myfont.render('IP: ' + dhcp_response['ip_address'], False, ORANGE)
+        textsurface = myfont.render('MAC: ' + dhcp_response['mac_address'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 80))
-        textsurface = myfont.render('Mask: ' + dhcp_response['subnet_mask'], False, ORANGE)
+        textsurface = myfont.render('IP: ' + dhcp_response['ip_address'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 100))
-        textsurface = myfont.render('Gateway: ' + dhcp_response['gateway'], False, ORANGE)
+        textsurface = myfont.render('Mask: ' + dhcp_response['subnet_mask'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 120))
+        textsurface = myfont.render('Gateway: ' + dhcp_response['gateway'], False, ORANGE)
+        DISPLAYSURF.blit(textsurface,(240, 140))
     except:
         # draw response on the screen
         myfont = pygame.font.Font(None, 30)
@@ -136,20 +138,20 @@ def get_link():
 
     myfont = pygame.font.Font(None, 30)
     textsurface = myfont.render('LINK', False, CYAN)
-    DISPLAYSURF.blit(textsurface,(240, 150))
+    DISPLAYSURF.blit(textsurface,(240, 170))
     try:
         if link_response['link'] == 'Link detected: yes':
             # draw response on the screen
             myfont = pygame.font.Font(None, 30)
             textsurface = myfont.render(link_response['speed'], False, ORANGE)
-            DISPLAYSURF.blit(textsurface,(240, 170))
-            textsurface = myfont.render(link_response['duplex'], False, ORANGE)
             DISPLAYSURF.blit(textsurface,(240, 190))
+            textsurface = myfont.render(link_response['duplex'], False, ORANGE)
+            DISPLAYSURF.blit(textsurface,(240, 210))
         else:
             # draw no link info on screen 
             myfont = pygame.font.Font(None, 30)
             textsurface = myfont.render('No link info', False, ORANGE)
-            DISPLAYSURF.blit(textsurface,(240, 170))
+            DISPLAYSURF.blit(textsurface,(240, 190))
 
     except:
         # draw response on the screen

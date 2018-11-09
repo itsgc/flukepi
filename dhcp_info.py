@@ -26,8 +26,10 @@ def get_ipaddr_data(response_type):
     if response_type == 'real':
         try:
             ip = NetNS('dp', flags=os.O_CREAT)
+            physical = ip.link("get", index=ip.link_lookup(ifname="eth0")[0])
             interface = ip.get_addr(label='eth0', family=AF_INET)
             ip_address = interface[0].get_attr('IFA_ADDRESS')
+            mac_address = physical[0].get_attr('IFLA_ADDRESS')
             cidr = interface[0]['prefixlen']
             gateway = ip.get_default_routes(family=AF_INET)[0].get_attr('RTA_GATEWAY')
         except IndexError as idxerror:
@@ -35,6 +37,7 @@ def get_ipaddr_data(response_type):
             ip_address = 'N/A'
             cidr = 0
             gateway = 'N/A'
+            mac_address = 'N/A'
         except Exception as e:
             raise e
         finally:
@@ -44,12 +47,15 @@ def get_ipaddr_data(response_type):
         ip_address = '192.168.0.5'
         cidr = 24
         gateway = '192.168.0.1' 
+        mac_address = 'aa:bb:cc:11:22:33'
     else:
         ip_address = 'N/A'
         cidr = 0
         gateway = 'N/A'
+        mac_address = 'N/A'
  
-    j = { 'ip_address': ip_address,
+    j = { 'mac_address': mac_address,
+          'ip_address': ip_address,
           'subnet_mask': cidr_to_netmask(cidr),
           'gateway': gateway }
     return j
@@ -65,6 +71,7 @@ def munge_output(config):
                     'ip_address': 'N/A',
                     'subnet_mask': 'N/A'
                   }
+    base_format['mac_address'] = config['mac_address']
     base_format['ip_address'] = config['ip_address']
     base_format['subnet_mask'] = config['subnet_mask']
     base_format['gateway'] = config['gateway']
