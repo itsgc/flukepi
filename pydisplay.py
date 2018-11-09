@@ -20,8 +20,8 @@ values = "NULL"
 labels = "NULL"
 timetopoll = True
 console_data = collections.deque(maxlen=10)
-console_data.append(subprocess.call("ip netns exec dp /sbin/ifconfig eth0", shell=True))
-
+ifconfig = subprocess.check_output(["ip", "netns", "exec", "dp", "/sbin/ifconfig", "eth0"])
+console_data.append(ifconfig.decode("utf-8"))
 
 ## Set up the screen
 
