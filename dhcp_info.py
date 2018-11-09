@@ -37,7 +37,6 @@ def get_ipaddr_data(response_type):
           ip_address = 'N/A'
           cidr = 0
           gateway = 'N/A'
-          mac_address = 'N/A'
       except Exception as e:
           raise e
       finally:
