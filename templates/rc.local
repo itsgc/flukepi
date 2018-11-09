@@ -1,0 +1,33 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+# create namespace and put eth0 in it
+ip netns add dp
+ip link set dev eth0 netns dp
+
+# start ifplugd in the instance
+ip netns exec dp /usr/sbin/ifplugd -I -i eth0 --delay-down=1
+
+# start backend in a screen
+screen -dmS screeNbackend bash -c '(cd /home/pi/lldp_pokedex; uwsgi --ini uwsgi.ini)'
+
+# start frontend
+cd /home/pi/lldp_pokedex && /usr/bin/python3 /home/pi/lldp_pokedex/pydisplay.py
+
+exit 0

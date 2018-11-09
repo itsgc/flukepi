@@ -32,6 +32,26 @@
       version: 0.5.3
       executable: pip3
 
+  - name: replace rc.local
+    template:
+      src: templates/rc.local
+      dest: /etc/rc.local
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: disable lldpd service and ensure stopped 
+    service:
+      name: lldpd 
+      enabled: no
+      state: stopped 
+
+  - name: disable ifplugd service and ensure stopped 
+    service:
+      name: ifplugd 
+      enabled: no
+      state: stopped 
+
   - name: create pi .ssh dir
     file:
       path: "/home/pi/.ssh"
