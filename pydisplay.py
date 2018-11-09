@@ -106,12 +106,14 @@ def get_dhcp():
     try:
         # draw response on the screen
         myfont = pygame.font.Font(None, 30)
-        textsurface = myfont.render('IP: ' + dhcp_response['ip_address'], False, ORANGE)
+        textsurface = myfont.render('IP: ' + dhcp_response['mac_address'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 80))
-        textsurface = myfont.render('Mask: ' + dhcp_response['subnet_mask'], False, ORANGE)
+        textsurface = myfont.render('IP: ' + dhcp_response['ip_address'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 100))
-        textsurface = myfont.render('Gateway: ' + dhcp_response['gateway'], False, ORANGE)
+        textsurface = myfont.render('Mask: ' + dhcp_response['subnet_mask'], False, ORANGE)
         DISPLAYSURF.blit(textsurface,(240, 120))
+        textsurface = myfont.render('Gateway: ' + dhcp_response['gateway'], False, ORANGE)
+        DISPLAYSURF.blit(textsurface,(240, 140))
     except:
         # draw response on the screen
         myfont = pygame.font.Font(None, 30)
