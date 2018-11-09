@@ -80,6 +80,7 @@ def worker(cmd_q):
 
 
 def gui_speedtest(started):
+    print("gui speedtest {}".format(started))
     if started:
         return
     cmd = ["./long-cmd"]
@@ -92,6 +93,7 @@ def gui_speedtest(started):
     #run_process(cmd, q)
     p.daemon = True
     p.start()
+    print("gui speedtest {}".format(started))
     return False
 
 @lru_cache(maxsize=1)
