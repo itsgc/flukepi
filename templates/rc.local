@@ -28,6 +28,6 @@ ip netns exec dp /usr/sbin/ifplugd -I -i eth0 --delay-down=1
 screen -dmS screeNbackend bash -c '(cd /home/pi/lldp_pokedex; uwsgi --ini uwsgi.ini)'
 
 # start frontend
-cd /home/pi/lldp_pokedex && /usr/bin/python3 /home/pi/lldp_pokedex/pydisplay.py
+screen -dmS screeNfrontend bash -c '(cd /home/pi/lldp_pokedex; /usr/bin/python3 /home/pi/lldp_pokedex/pydisplay.py)'
 
 exit 0
