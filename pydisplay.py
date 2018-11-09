@@ -135,12 +135,19 @@ def get_link():
     textsurface = myfont.render('LINK', False, CYAN)
     DISPLAYSURF.blit(textsurface,(240, 150))
     try:
-        # draw response on the screen
-        myfont = pygame.font.Font(None, 30)
-        textsurface = myfont.render(link_response['speed'], False, ORANGE)
-        DISPLAYSURF.blit(textsurface,(240, 170))
-        textsurface = myfont.render(link_response['duplex'], False, ORANGE)
-        DISPLAYSURF.blit(textsurface,(240, 190))
+        if link_response['link'] == 'Link detected: yes':
+            # draw response on the screen
+            myfont = pygame.font.Font(None, 30)
+            textsurface = myfont.render(link_response['speed'], False, ORANGE)
+            DISPLAYSURF.blit(textsurface,(240, 170))
+            textsurface = myfont.render(link_response['duplex'], False, ORANGE)
+            DISPLAYSURF.blit(textsurface,(240, 190))
+        else:
+            # draw no link info on screen 
+            myfont = pygame.font.Font(None, 30)
+            textsurface = myfont.render('No link info', False, ORANGE)
+            DISPLAYSURF.blit(textsurface,(240, 170))
+
     except:
         # draw response on the screen
         myfont = pygame.font.Font(None, 30)
