@@ -1,19 +1,37 @@
 # lldp_pokedex
 
-an attempt to make a small raspi-based gadget that tells you LLDP information and possibly link speed / dhcp etc.
+An attempt to make a small raspi-based gadget that provides you with
+ - LLDP information
+ - Link speed/dupex
+ - DHCP
+ - Speed test against fast.com
+ 
+ ## Install Distro
+ Download and install Raspbian stretch lite
+ [https://www.raspberrypi.org/downloads/raspbian/]
+ 
+ ## Install latest ansible
+ Add the following line to /etc/apt/sources.list:
+ ```
+ deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main
+ ```
 
-Add the following line to /etc/apt/sources.list:
+ Add the repos key and install ansible:
+ ```
+ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
+ sudo apt-get update
+ sudo apt-get install ansible
+ ```
 
-deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main
-Then run these commands:
+### Clone the repo
+ ```
+ git clone https://github.com/itsgc/lldp_pokedex.git
+ ```
+ 
+### Run Ansible
+``` 
+sudo ansible-playbook ansible.yml
+```
 
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
-sudo apt-get update
-sudo apt-get install ansible
+Reboot the device to automatically start the frontend and backend.
 
-
-Start backend
-sudo uwsgi --ini uwsgi.ini
-
-Start Frontend
-sudo python3 pydisplay.py
