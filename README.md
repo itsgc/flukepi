@@ -25,7 +25,7 @@ An attempt to make a small raspi-based gadget that provides you with
 
 ### Clone the repo
  ```
- git clone https://github.com/itsgc/lldp_pokedex.git
+ git clone https://github.com/itsgc/flukepi.git
  ```
  
 ### Run Ansible
