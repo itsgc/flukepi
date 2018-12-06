@@ -1,4 +1,4 @@
-# lldp_pokedex
+# flukepi
 
 An attempt to make a small raspi-based gadget that provides you with
  - LLDP information
